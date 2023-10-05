@@ -1,0 +1,100 @@
+<!-- Header -->
+<div class="site-page-header-ghost-wrapper">
+    <nz-page-header nzBackIcon [nzGhost]="false">
+        <nz-page-header-title>E'lonlar</nz-page-header-title>
+        <nz-page-header-subtitle>Barcha e'lonlar sahifasi</nz-page-header-subtitle>
+        <nz-page-header-extra>
+            <nz-space>
+                <button *nzSpaceItem nz-button nzType="primary" (click)="open('create')">E'lon qo'shish</button>
+            </nz-space>
+        </nz-page-header-extra>
+    </nz-page-header>
+</div>
+
+<!-- Table -->
+<nz-table #basicTable 
+    [nzData]="listOfData" 
+    [nzFrontPagination]="true" 
+    [nzPageSize]="10"
+    [nzTotal]="totalDataCount" 
+    [nzPageIndex]="currentPage" 
+    (nzPageIndexChange)="onPageChange($event)">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Region</th>
+            <th>Author</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of basicTable.data" (click)="open('update', data.id)">
+            <td>{{ data.title }}</td>
+            <td>{{ data.amount }}</td>
+            <td>{{ data.descr }}</td>
+            <td>{{ data.region }}</td>
+            <td>{{ data.author.fullname }}</td>
+        </tr>
+    </tbody>
+</nz-table>
+
+<nz-drawer [nzClosable]="false" [nzVisible]="visible" nzPlacement="right" [nzTitle]="type" (nzOnClose)="close()">
+    <ng-container *nzDrawerContent>
+        <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your title!">
+                    <nz-input-group>
+                        <input type="text" nz-input formControlName="title" placeholder="title" />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your amount!">
+                    <nz-input-group>
+                        <input type="number" nz-input formControlName="amount" placeholder="amount" />
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your description">
+                    <nz-input-group>
+                        <textarea rows="4" nz-input formControlName="descr" placeholder="description"></textarea>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your amount!">
+                    <nz-input-group>
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Hudud tanlang" formControlName="region">
+                            <nz-option nzLabel="Termiz" nzValue="Termiz"></nz-option>
+                            <nz-option nzLabel="Qarshi" nzValue="Qarshi"></nz-option>
+                            <nz-option nzLabel="Samarqand" nzValue="Samarqand"></nz-option>
+                            <nz-option nzLabel="Toshkent" nzValue="Toshkent"></nz-option>
+                        </nz-select>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Please input your category!">
+                    <nz-input-group>
+                        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Kategoriya tanlang"
+                            formControlName="categoryId">
+                            <nz-option *ngFor="let category of posterCategory" [nzLabel]="category.title"
+                                [nzValue]="category.id"></nz-option>
+                        </nz-select>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+
+            <div class="text-end" *ngIf="type == 'create' || type == 'update'">
+                <button type="submit" nz-button class="login-form-button login-form-margin"
+                    [nzType]="'primary'">{{type}}</button>
+                <button *ngIf="type == 'update'" type="submit" nz-button nzDanger
+                    class="login-form-button login-form-margin" [nzType]="'primary'"
+                    (click)="delete(id)">delete</button>
+            </div>
+
+        </form>
+    </ng-container>
+</nz-drawer>
